@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:seventy_five_hard/Utils/utils.dart';
+import 'package:seventy_five_hard/models/user_model.dart';
+import 'package:seventy_five_hard/screens/home_screen.dart';
 import 'package:seventy_five_hard/screens/signup_screen.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
 import 'package:seventy_five_hard/widgets/input_field.dart';
 import 'package:seventy_five_hard/widgets/primary_button.dart';
+import 'package:seventy_five_hard/widgets/providers/user_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +17,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool isLoading = false;
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   SupabaseServices supabaseServices = SupabaseServices.instance;
@@ -46,9 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 16),
             PrimaryButton(
-              onPressed: () => supabaseServices.login(
-                  email: emailController.text,
-                  password: passwordController.text),
+              isLoading: isLoading,
+              onPressed: login,
               title: 'SignIn',
             ),
             const SizedBox(height: 16),
@@ -76,5 +81,26 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void login() async {
+    UserProvider userProvider = Provider.of(context, listen: false);
+    setState(() {
+      isLoading = true;
+    });
+    final response = await supabaseServices.login(
+        email: emailController.text, password: passwordController.text);
+    if (response.containsKey("username")) {
+      userProvider.setUser(User(
+          username: response["username"],
+          email: response["email"],
+          imageUrl: response["imageUrl"]));
+
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 }

@@ -3,9 +3,13 @@ import 'package:seventy_five_hard/Utils/utils.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String title;
+  final bool isLoading;
   final Function()? onPressed;
   const PrimaryButton(
-      {super.key, required this.title, required this.onPressed});
+      {super.key,
+      required this.title,
+      required this.onPressed,
+      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,13 @@ class PrimaryButton extends StatelessWidget {
                 backgroundColor: AppColors.primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0))),
-            child: Text(title,
-                style: const TextStyle(fontSize: 20, color: AppColors.white))));
+            child: isLoading
+                ? const CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColors.white,
+                  )
+                : Text(title,
+                    style: const TextStyle(
+                        fontSize: 20, color: AppColors.white))));
   }
 }

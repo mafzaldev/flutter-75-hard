@@ -13,6 +13,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool isLoading = false;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
@@ -58,10 +59,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 16),
               PrimaryButton(
-                onPressed: () => supabaseServices.signup(
-                    email: emailController.text,
-                    password: passwordController.text,
-                    username: usernameController.text),
+                isLoading: isLoading,
+                onPressed: signUp,
                 title: 'SignUp',
               ),
               const SizedBox(height: 16),
@@ -90,5 +89,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void signUp() async {
+    setState(() {
+      isLoading = true;
+    });
+    final response = await supabaseServices.signup(
+        email: emailController.text,
+        password: passwordController.text,
+        username: usernameController.text);
+    if (response == 'success') {
+      Utils.showToast('SignUp successfully, please Login!');
+    } else {
+      Utils.showToast(response);
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 }
