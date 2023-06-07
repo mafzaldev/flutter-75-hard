@@ -92,6 +92,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void signUp() async {
+    if (usernameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        passwordController.text.isEmpty) {
+      Utils.showToast('Please fill all the fields');
+      return;
+    }
+
+    if (usernameController.text.length < 5) {
+      Utils.showToast('Username must be at least 5 characters');
+      return;
+    }
     setState(() {
       isLoading = true;
     });
@@ -106,6 +117,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
     setState(() {
       isLoading = false;
+      usernameController.clear();
+      emailController.clear();
+      passwordController.clear();
     });
   }
 }

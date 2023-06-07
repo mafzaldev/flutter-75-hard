@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seventy_five_hard/Utils/utils.dart';
@@ -7,7 +9,7 @@ import 'package:seventy_five_hard/screens/signup_screen.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
 import 'package:seventy_five_hard/widgets/input_field.dart';
 import 'package:seventy_five_hard/widgets/primary_button.dart';
-import 'package:seventy_five_hard/widgets/providers/user_provider.dart';
+import 'package:seventy_five_hard/providers/user_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -84,6 +86,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      Utils.showToast('Please fill all the fields');
+      return;
+    }
     UserProvider userProvider = Provider.of(context, listen: false);
     setState(() {
       isLoading = true;
@@ -101,6 +107,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     setState(() {
       isLoading = false;
+      emailController.clear();
+      passwordController.clear();
     });
   }
 }

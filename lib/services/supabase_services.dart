@@ -1,7 +1,6 @@
 // ignore_for_file: unused_field
 
 import 'dart:developer';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseServices {
@@ -41,7 +40,7 @@ class SupabaseServices {
         'username': user.userMetadata!['username'],
         'email': user.email,
         'image_url':
-            'https://api.dicebear.com/6.x/identicon/svg?seed=${user.userMetadata!['username']}'
+            'https://api.dicebear.com/6.x/bottts/svg?seed=${user.userMetadata!['username']}&backgroundColor=FFFFFF'
       });
 
       response = "success";
@@ -63,20 +62,21 @@ class SupabaseServices {
       );
       _session = authResponse.session;
       User? user = authResponse.user;
-      userData["username"] = user!.userMetadata!['username'];
+      final imageUrl = await getUserAvatar(user!.email!);
+      userData["username"] = user.userMetadata!['username'];
       userData["email"] = user.email;
-
-      final data = await supabase
-          .from('users')
-          .select('image_url')
-          .eq('email', user.email);
-
-      userData["imageUrl"] = data[0]["image_url"];
+      userData["imageUrl"] = imageUrl;
     } catch (e) {
       log('error: $e');
     }
 
     return userData;
+  }
+
+  Future<String> getUserAvatar(String email) async {
+    final data =
+        await supabase.from('users').select('image_url').eq('email', email);
+    return data[0]["image_url"];
   }
 
   Future<void> logout() async {
