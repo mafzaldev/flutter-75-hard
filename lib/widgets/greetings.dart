@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:seventy_five_hard/providers/user_provider.dart';
 
 class Greetings extends StatelessWidget {
+  final String imageUrl;
+  final String username;
+
   const Greetings({
     super.key,
-    required this.userProvider,
+    required this.imageUrl,
+    required this.username,
   });
-
-  final UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +17,13 @@ class Greetings extends StatelessWidget {
       children: [
         ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: SvgPicture.network(height: 60, userProvider.user!.imageUrl)),
+            child: SvgPicture.network(height: 60, imageUrl)),
         const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text("Hello", style: TextStyle(fontSize: 16)),
-            Text(userProvider.user!.username,
+            Text(username,
                 style:
                     const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
           ],

@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Utils {
@@ -8,12 +8,21 @@ class Utils {
 
   static showToast(String text) {
     Fluttertoast.showToast(
-        msg: text,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: const Color(0xFF818181),
-        textColor: AppColors.white,
-        fontSize: 13.0);
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: const Color(0xFF818181),
+      textColor: AppColors.white,
+    );
+  }
+
+  static navigateTo(BuildContext context, Widget page, {bool replace = false}) {
+    if (replace) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => page));
+      return;
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
 }
 

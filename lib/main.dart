@@ -2,9 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as state_provider;
+import 'package:seventy_five_hard/screens/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import 'package:seventy_five_hard/screens/login_screen.dart';
 import 'package:seventy_five_hard/Utils/utils.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
 
@@ -28,27 +27,6 @@ class _MainAppState extends State<MainApp> {
   final supabase = Supabase.instance.client;
   bool isLoggedin = false;
 
-  /*checkIfLoggedIn() async {
-    SupabaseServices supabaseServices = SupabaseServices.instance;
-
-    supabase.auth.onAuthStateChange.listen((data) async {
-      final AuthChangeEvent event = data.event;
-      if (event == AuthChangeEvent.signedIn) {
-        final User? user = supabase.auth.currentUser;
-        final imageUrl = await supabaseServices.getUserAvatar(user!.email!);
-
-        state_provider.Provider.of<UserProvider>(context, listen: false)
-            .setUser(user_model.User(
-                email: user.email!,
-                username: user.userMetadata!['username'],
-                imageUrl: imageUrl));
-        setState(() {
-          isLoggedin = true;
-        });
-      }
-    });
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return state_provider.MultiProvider(
@@ -61,7 +39,7 @@ class _MainAppState extends State<MainApp> {
           theme: ThemeData.dark(
             useMaterial3: true,
           ),
-          home: const LoginScreen(),
+          home: const SplashScreen(),
         ));
   }
 }

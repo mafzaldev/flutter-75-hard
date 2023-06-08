@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:seventy_five_hard/Utils/utils.dart';
+import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/screens/login_screen.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
 import 'package:seventy_five_hard/widgets/input_field.dart';
@@ -72,10 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   InkWell(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen())),
+                    onTap: () => Utils.navigateTo(context, const LoginScreen()),
                     child: const Text(
                       "SignIn",
                       style: TextStyle(

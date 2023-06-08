@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:seventy_five_hard/Utils/utils.dart';
-import 'package:seventy_five_hard/models/user_model.dart';
 import 'package:seventy_five_hard/screens/home_screen.dart';
+import 'package:seventy_five_hard/utils/utils.dart';
+import 'package:seventy_five_hard/models/user_model.dart';
 import 'package:seventy_five_hard/screens/signup_screen.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
 import 'package:seventy_five_hard/widgets/input_field.dart';
@@ -67,10 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
                 InkWell(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignUpScreen())),
+                  onTap: () => Utils.navigateTo(context, const SignUpScreen()),
                   child: const Text(
                     "SignUp",
                     style:
@@ -102,8 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
           email: response["email"],
           imageUrl: response["imageUrl"]));
 
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Utils.navigateTo(context, const HomeScreen(), replace: true);
     }
     setState(() {
       isLoading = false;
