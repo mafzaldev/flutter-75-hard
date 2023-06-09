@@ -13,6 +13,7 @@ class PreferencesScreen extends StatefulWidget {
 }
 
 class _PreferencesScreenState extends State<PreferencesScreen> {
+  bool imposePenalty = false;
   @override
   void initState() {
     super.initState();
@@ -25,12 +26,29 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Preferences"),
+        title: const Text(
+          "Preferences",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
+            const SizedBox(height: 10),
+            SwitchListTile(
+                activeColor: AppColors.primaryColor,
+                title: const Text(
+                  "Impose the default penalty",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                ),
+                value: imposePenalty,
+                onChanged: (value) {
+                  setState(() {
+                    imposePenalty = value;
+                  });
+                }),
+            const Spacer(),
             PrimaryButton(
                 title: "Logout",
                 onPressed: () async {
@@ -38,7 +56,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   await Future.delayed(const Duration(seconds: 2));
                   userProvider.logOut();
                 },
-                isLoading: false)
+                isLoading: false),
+            const SizedBox(height: 20),
           ],
         ),
       ),
