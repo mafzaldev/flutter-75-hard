@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
-import 'package:seventy_five_hard/screens/login_screen.dart';
+import 'package:seventy_five_hard/screens/preferences_screen.dart';
 import 'package:seventy_five_hard/services/api_services.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/widgets/greetings.dart';
@@ -16,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isQuoteLoading = true;
-  String quote = "";
+  List<String> quotes = [];
 
   @override
   void initState() {
@@ -26,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getQuote() async {
     APIServices apiServices = APIServices.instance;
-    quote = await apiServices.fetchQuote();
+    quotes = await apiServices.fetchQuotes();
     setState(() {
       isQuoteLoading = false;
     });
@@ -49,13 +51,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           IconButton(
-            onPressed: () async {
-              Utils.navigateTo(context, const LoginScreen(), replace: true);
-              await Future.delayed(const Duration(seconds: 2));
-              userProvider.logOut();
-            },
+            onPressed: () =>
+                Utils.navigateTo(context, const PreferencesScreen()),
             icon: const Icon(
-              Icons.logout,
+              Icons.settings,
               size: 25,
             ),
           )
@@ -79,25 +78,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: const Color(0xB6626262),
                 ),
                 child: Center(
-                    child: isQuoteLoading
-                        ? const CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          )
-                        : Text(
-                            quote,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600),
-                          )
-                            .animate()
-                            .fadeIn()
-                            .move(delay: 300.ms, duration: 600.ms))),
+                  child: isQuoteLoading
+                      ? const CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.white,
+                        )
+                      : AnimatedTextKit(
+                          repeatForever: true,
+                          animatedTexts: [
+                            getQuoteText(quotes[0]),
+                            getQuoteText(quotes[1]),
+                            getQuoteText(quotes[2]),
+                            getQuoteText(quotes[3]),
+                            getQuoteText(quotes[4]),
+                          ],
+                          onTap: () {
+                            log("Tap Event");
+                          },
+                        ),
+                )),
           ],
         ),
       ),
+    );
+  }
+
+  FadeAnimatedText getQuoteText(quote) {
+    return FadeAnimatedText(
+      quote,
+      textAlign: TextAlign.center,
+      textStyle: const TextStyle(
+          color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
     );
   }
 }

@@ -2,27 +2,18 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:seventy_five_hard/utils/utils.dart';
 
-class APIEndpoints {
-  static const String basUrl = "https://api.api-ninjas.com/v1/quotes?category=";
-  static const String apiKey = "ltpUPVUajjNmYjxzcRZe9w==CT5BHIj1NjJs5MDu";
-  static const List<String> categories = [
-    'failure',
-    'god',
-    'faith',
-    'hope',
-    'health',
-    'life',
-    'experience',
-    'freedom',
-    'success',
-    'inspirational'
-  ];
+class APIConstants {
+  static String quotesBaseUrl =
+      "https://api.api-ninjas.com/v1/quotes?category=";
+  static String booksBaseUrl = "https://www.googleapis.com/books/v1/volumes";
+  static String quotesApiKey = "ltpUPVUajjNmYjxzcRZe9w==CT5BHIj1NjJs5MDu";
+  static String booksApiKey = "AIzaSyBDAM7_BTitEcSUebbFZDUlVrG2_Ip02sk";
 }
 
 class APIServices {
   static APIServices? _instance;
-
   APIServices._();
 
   static APIServices get instance {
@@ -30,25 +21,26 @@ class APIServices {
     return _instance!;
   }
 
-  Future<String> fetchQuote() async {
-    String quote = "";
-    String apiEndpoint = APIEndpoints.basUrl +
-        APIEndpoints.categories[DateTime.now().millisecondsSinceEpoch %
-            APIEndpoints.categories.length];
+  Future<List<String>> fetchQuotes() async {
+    List<String> quotes = [];
+    int categoryIndex =
+        Utils.generateRandomNumber(0, Utils.quoteCategories.length - 1);
+    String apiEndpoint =
+        "${APIConstants.quotesBaseUrl}${Utils.quoteCategories[categoryIndex]}&limit=5";
     try {
       final response = await http.get(Uri.parse(apiEndpoint), headers: {
-        'X-Api-Key': APIEndpoints.apiKey,
+        'X-Api-Key': APIConstants.quotesApiKey,
       });
 
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
-        quote = body[0]["quote"];
+        quotes = body.map((e) => e["quote"]).toList().cast<String>();
       } else {
         throw '${response.statusCode}: Error Occurred';
       }
     } catch (e) {
       log(e.toString());
     }
-    return quote;
+    return quotes;
   }
 }

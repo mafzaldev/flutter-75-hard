@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -24,6 +25,24 @@ class Utils {
     }
     Navigator.push(context, MaterialPageRoute(builder: (context) => page));
   }
+
+  static int generateRandomNumber(int min, int max) {
+    Random random = Random();
+    return min + random.nextInt(max - min + 1);
+  }
+
+  static List<String> quoteCategories = [
+    'failure',
+    'god',
+    'faith',
+    'hope',
+    'health',
+    'life',
+    'experience',
+    'freedom',
+    'success',
+    'inspirational'
+  ];
 }
 
 class AppColors {
