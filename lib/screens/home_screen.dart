@@ -4,6 +4,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
 import 'package:seventy_five_hard/screens/history_screen.dart';
 import 'package:seventy_five_hard/screens/preferences_screen.dart';
+import 'package:seventy_five_hard/screens/progress_screen.dart';
 import 'package:seventy_five_hard/services/api_services.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/widgets/greetings.dart';
@@ -101,49 +102,110 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                 )),
-            const RuleCard(
-              icon: Icon(
-                Icons.restaurant,
+            RuleCard(
+              icon: const Icon(
+                Icons.restaurant_outlined,
                 size: 45,
                 color: Colors.green,
               ),
               title: "Follow a diet plan",
-              action: SizedBox(),
+              action: const SizedBox(),
+              onTap: () {
+                Utils.navigateTo(
+                    context,
+                    const ProgressScreen(
+                      appBarTitle: "Diet",
+                      icon: Icons.restaurant_outlined,
+                      tip: 'Follow a diet plan',
+                      unit: 1.0,
+                      progress: 0.0,
+                      progressColor: Colors.green,
+                    ));
+              },
             ),
-            const RuleCard(
-              icon: Icon(
-                Icons.directions_run,
+            RuleCard(
+              icon: const Icon(
+                Icons.directions_run_outlined,
                 size: 45,
                 color: Colors.red,
               ),
               title: "45-minute workout",
-              action: SizedBox(),
+              action: const SizedBox(),
+              onTap: () {
+                Utils.navigateTo(
+                    context,
+                    const ProgressScreen(
+                      appBarTitle: "Workout",
+                      icon: Icons.directions_run_outlined,
+                      tip: '45-minute workout',
+                      unit: 0.02,
+                      progress: 0.0,
+                      progressColor: Colors.red,
+                    ));
+              },
             ),
-            const RuleCard(
-              icon: Icon(
-                Icons.image,
+            RuleCard(
+              icon: const Icon(
+                Icons.image_outlined,
                 size: 45,
+                color: Colors.amber,
               ),
               title: "Take a progress picture",
-              action: SizedBox(),
+              action: const SizedBox(),
+              onTap: () {
+                Utils.navigateTo(
+                    context,
+                    const ProgressScreen(
+                      appBarTitle: "Picture",
+                      icon: Icons.image_outlined,
+                      tip: 'Take a progress picture',
+                      unit: 1.0,
+                      progress: 0.0,
+                      progressColor: Colors.amber,
+                    ));
+              },
             ),
-            const RuleCard(
-              icon: Icon(
-                Icons.water_drop,
+            RuleCard(
+              icon: const Icon(
+                Icons.water_drop_outlined,
                 size: 45,
                 color: Colors.blue,
               ),
               title: "Drink 1 gallon of water",
-              action: SizedBox(),
+              action: const SizedBox(),
+              onTap: () {
+                Utils.navigateTo(
+                    context,
+                    const ProgressScreen(
+                      appBarTitle: "Water",
+                      icon: Icons.water_drop_outlined,
+                      tip: 'Drink 1 gallon of water',
+                      unit: 0.0625,
+                      progress: 0.0,
+                      progressColor: Colors.blue,
+                    ));
+              },
             ),
-            const RuleCard(
-              icon: Icon(
-                Icons.book,
+            RuleCard(
+              icon: const Icon(
+                Icons.book_outlined,
                 size: 45,
                 color: Colors.orange,
               ),
               title: "Read 10 pages of a book",
-              action: SizedBox(),
+              action: const SizedBox(),
+              onTap: () {
+                Utils.navigateTo(
+                    context,
+                    const ProgressScreen(
+                      appBarTitle: "Reading",
+                      icon: Icons.book_outlined,
+                      tip: 'Read 10 pages of a book',
+                      unit: 0.1,
+                      progress: 0.0,
+                      progressColor: Colors.orange,
+                    ));
+              },
             ),
           ],
         ),

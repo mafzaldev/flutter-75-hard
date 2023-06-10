@@ -1,10 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart' as state_provider;
-import 'package:seventy_five_hard/screens/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart' as state_provider;
 import 'package:seventy_five_hard/Utils/utils.dart';
+import 'package:seventy_five_hard/screens/splash_screen.dart';
+import 'package:seventy_five_hard/providers/progress_provider.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
 
 Future<void> main() async {
@@ -32,6 +33,8 @@ class _MainAppState extends State<MainApp> {
     return state_provider.MultiProvider(
         providers: [
           state_provider.ChangeNotifierProvider(create: (_) => UserProvider()),
+          state_provider.ChangeNotifierProvider(
+              create: (_) => ProgressProvider()),
         ],
         child: MaterialApp(
           title: '75Hard',

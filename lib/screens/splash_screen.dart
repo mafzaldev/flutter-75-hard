@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as state_provider;
 import 'package:seventy_five_hard/models/user_model.dart' as user_model;
 import 'package:seventy_five_hard/providers/user_provider.dart';
-import 'package:seventy_five_hard/screens/login_screen.dart';
 import 'package:seventy_five_hard/screens/home_screen.dart';
+import 'package:seventy_five_hard/screens/login_screen.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -37,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final session = supabase.auth.currentSession;
     if (session != null) {
       _getProfile();
+      _getProgress();
       await Future.delayed(const Duration(seconds: 3));
       Utils.navigateTo(context, const HomeScreen(), replace: true);
     } else {
@@ -61,6 +62,8 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
   }
+
+  _getProgress() {}
 
   @override
   Widget build(BuildContext context) {

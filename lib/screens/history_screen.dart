@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seventy_five_hard/utils/utils.dart';
 
 class HistoryScreen extends StatelessWidget {
   final currentDay = 10;
@@ -11,7 +12,7 @@ class HistoryScreen extends StatelessWidget {
           centerTitle: true,
           title: const Text(
             "History",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ),
         body: GridView.builder(
@@ -24,12 +25,12 @@ class HistoryScreen extends StatelessWidget {
               return Container(
                 margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                    color: day < currentDay
-                        ? Colors.green
-                        : day == currentDay
-                            ? Colors.blue
-                            : Colors.grey,
-                    borderRadius: BorderRadius.circular(50)),
+                  color: day < currentDay
+                      ? Colors.green
+                      : day == currentDay
+                          ? AppColors.primaryColor
+                          : Colors.grey,
+                ),
                 child: Center(
                   child: Text(
                     "$day",
