@@ -43,6 +43,14 @@ class Utils {
     'success',
     'inspirational'
   ];
+
+  static Map<String, String> tasks = {
+    "Diet": "diet progress: ",
+    "Workout": "workout progress: ",
+    "Picture": "picture progress: ",
+    "Water": "water progress: ",
+    "Reading": "reading progress: ",
+  };
 }
 
 class AppColors {

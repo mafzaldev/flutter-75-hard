@@ -3,15 +3,15 @@ import 'package:flutter/foundation.dart';
 class ProgressProvider with ChangeNotifier {
   int? _day;
 
-  int? _diet;
-  bool? _picture;
+  double? _diet;
+  double? _picture;
   double? _reading;
   double? _workout;
   double? _water;
 
   int? get day => _day;
-  int? get diet => _diet;
-  bool? get picture => _picture;
+  double? get diet => _diet;
+  double? get picture => _picture;
   double? get reading => _reading;
   double? get workout => _workout;
   double? get water => _water;
@@ -21,7 +21,7 @@ class ProgressProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setDiet(int? diet) {
+  void setDiet(double? diet) {
     _diet = diet;
     notifyListeners();
   }
@@ -31,7 +31,7 @@ class ProgressProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setPicture(bool? picture) {
+  void setPicture(double? picture) {
     _picture = picture;
     notifyListeners();
   }
@@ -46,7 +46,7 @@ class ProgressProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setAllProgress(int? day, int? diet, double? reading, bool? picture,
+  void setProgress(int? day, double? diet, double? reading, double? picture,
       double? workout, double? water) {
     _day = day;
     _diet = diet;

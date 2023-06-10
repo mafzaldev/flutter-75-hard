@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class RuleCard extends StatelessWidget {
   final String title;
   final Icon icon;
-  final Widget action;
+  final double status;
   final Function()? onTap;
   const RuleCard({
     super.key,
     required this.title,
     required this.icon,
-    required this.action,
+    required this.status,
     required this.onTap,
   });
 
@@ -34,7 +34,9 @@ class RuleCard extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
             const Spacer(),
-            action,
+            Text('${(status * 100).toStringAsFixed(0)}%',
+                style:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
           ],
         ),
       ),
