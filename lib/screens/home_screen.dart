@@ -105,9 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
+                  const SizedBox(height: 5),
                   Greetings(
                       username: userProvider.user!.username,
-                      imageUrl: userProvider.user!.imageUrl),
+                      imageUrl: userProvider.user!.imageUrl,
+                      day: progressProvider.day.toString()),
                   const SizedBox(height: 10),
                   Container(
                       margin: const EdgeInsets.only(top: 16),

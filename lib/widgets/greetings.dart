@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 
 class Greetings extends StatelessWidget {
+  final String day;
   final String imageUrl;
   final String username;
 
@@ -10,6 +11,7 @@ class Greetings extends StatelessWidget {
     super.key,
     required this.imageUrl,
     required this.username,
+    required this.day,
   });
 
   @override
@@ -35,7 +37,17 @@ class Greetings extends StatelessWidget {
                 style:
                     const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
           ],
-        )
+        ),
+        const Spacer(),
+        Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                border: Border.all(color: AppColors.primaryColor),
+                borderRadius: BorderRadius.circular(10)),
+            child: Text(
+              'Day: $day',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ))
       ],
     );
   }
