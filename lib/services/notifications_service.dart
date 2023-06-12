@@ -1,5 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
 class NotificationService {
@@ -12,7 +11,7 @@ class NotificationService {
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.periodicallyShow(
-      Utils.generateRandomNumber(1, 100),
+      75,
       '75 Hard',
       'Keep Grinding!!!',
       RepeatInterval.hourly,

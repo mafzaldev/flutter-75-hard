@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:seventy_five_hard/services/sqflite_services.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Greetings extends StatelessWidget {
   final String day;
@@ -29,9 +30,11 @@ class Greetings extends StatelessWidget {
             log(data.toString());
           },
           onDoubleTap: () async {
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
             SqfliteServices sqfliteServices = SqfliteServices();
-            var data = await sqfliteServices.deleteAllData();
-            log(data.toString());
+            Utils.clearPreferences(1);
+            await sqfliteServices.deleteAllData();
           },
           child: Badge(
             smallSize: 12,

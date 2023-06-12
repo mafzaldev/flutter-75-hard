@@ -1,6 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:seventy_five_hard/services/sqflite_services.dart';
-import 'package:seventy_five_hard/utils/utils.dart';
 
 class ProgressProvider with ChangeNotifier {
   int? _day;
@@ -45,7 +43,6 @@ class ProgressProvider with ChangeNotifier {
 
   void setWater(double water) {
     _water = water;
-    saveProgress();
     notifyListeners();
   }
 
@@ -60,6 +57,7 @@ class ProgressProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /* 
   void saveProgress() async {
     SqfliteServices sqfliteServices = SqfliteServices();
     try {
@@ -70,5 +68,5 @@ class ProgressProvider with ChangeNotifier {
     } catch (e) {
       Utils.showToast(e.toString());
     }
-  }
+  }*/
 }

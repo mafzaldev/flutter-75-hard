@@ -62,10 +62,10 @@ class Utils {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt('currentDay', nextDay);
-    await prefs.setDouble('diet', 0.0);
-    await prefs.setDouble('workout', 0.0);
-    await prefs.setDouble('picture', 0.0);
-    await prefs.setDouble('water', 0.0);
-    await prefs.setDouble('reading', 0.0);
+    await prefs.remove("diet");
+    await prefs.remove("workout");
+    await prefs.remove("picture");
+    await prefs.remove("water");
+    await prefs.remove("reading");
   }
 }

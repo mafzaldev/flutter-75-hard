@@ -10,6 +10,7 @@ import 'package:seventy_five_hard/services/supabase_services.dart';
 import 'package:seventy_five_hard/widgets/input_field.dart';
 import 'package:seventy_five_hard/widgets/primary_button.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -88,17 +89,22 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
     UserProvider userProvider = Provider.of(context, listen: false);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
+
     setState(() {
       isLoading = true;
     });
     final response = await supabaseServices.login(
         email: emailController.text, password: passwordController.text);
     if (response.containsKey("username")) {
-      userProvider.setUser(User(
-          username: response["username"],
-          email: response["email"],
-          imageUrl: response["imageUrl"]));
-
+      userProvider.setUser(
+        User(
+            username: response["username"],
+            email: response["email"],
+            imageUrl: response["imageUrl"]),
+      );
+      userProvider.setDefaultPenalty(defaultPenalty);
       Utils.navigateTo(context, const HomeScreen(), replace: true);
     }
     setState(() {

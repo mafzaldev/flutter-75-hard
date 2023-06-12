@@ -6,7 +6,10 @@ import 'package:seventy_five_hard/services/supabase_services.dart';
 
 class UserProvider with ChangeNotifier {
   User? _user;
+  bool? _defaultPenalty;
+
   User? get user => _user;
+  bool? get defaultPenalty => _defaultPenalty;
 
   void setUser(User? user) {
     _user = user;
@@ -14,10 +17,16 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setDefaultPenalty(bool? defaultPenalty) {
+    _defaultPenalty = defaultPenalty;
+    notifyListeners();
+  }
+
   void logOut() async {
     SupabaseServices supabaseServices = SupabaseServices.instance;
     supabaseServices.logout();
     _user = null;
+    _defaultPenalty = null;
     notifyListeners();
   }
 }

@@ -52,12 +52,19 @@ class _HomeScreenState extends State<HomeScreen> {
       if (event == AuthChangeEvent.signedIn) {
         final User? user = supabase.auth.currentUser;
         final imageUrl = await supabaseServices.getUserAvatar(user!.email!);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
 
         state_provider.Provider.of<UserProvider>(context, listen: false)
-            .setUser(user_model.User(
-                email: user.email!,
-                username: user.userMetadata!['username'],
-                imageUrl: imageUrl));
+            .setUser(
+          user_model.User(
+            email: user.email!,
+            username: user.userMetadata!['username'],
+            imageUrl: imageUrl,
+          ),
+        );
+        state_provider.Provider.of<UserProvider>(context, listen: false)
+            .setDefaultPenalty(defaultPenalty);
       }
       setState(() {
         profileLoading = false;
@@ -106,10 +113,17 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 5),
-                  Greetings(
-                      username: userProvider.user!.username,
-                      imageUrl: userProvider.user!.imageUrl,
-                      day: progressProvider.day.toString()),
+                  profileLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.white,
+                          ),
+                        )
+                      : Greetings(
+                          username: userProvider.user!.username,
+                          imageUrl: userProvider.user!.imageUrl,
+                          day: progressProvider.day.toString()),
                   const SizedBox(height: 10),
                   Container(
                       margin: const EdgeInsets.only(top: 16),
