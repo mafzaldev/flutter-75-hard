@@ -67,6 +67,16 @@ class SqfliteServices {
     return await db.insert(_tableName, data);
   }
 
+  Future<List<Map<String, dynamic>>> getAllData() async {
+    final Database db = await database;
+    return await db.query(_tableName);
+  }
+
+  Future<int> deleteAllData() async {
+    final Database db = await database;
+    return await db.delete(_tableName);
+  }
+
   Future<List<Map<String, dynamic>>> getDataByDay(int day) async {
     final Database db = await database;
     return await db.query(

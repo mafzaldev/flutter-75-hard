@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:seventy_five_hard/services/sqflite_services.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 
 class Greetings extends StatelessWidget {
@@ -20,6 +23,16 @@ class Greetings extends StatelessWidget {
       children: [
         InkWell(
           // onTap: () => Utils.navigateTo(context, const PreferencesScreen()),
+          onTap: () async {
+            SqfliteServices sqfliteServices = SqfliteServices();
+            var data = await sqfliteServices.getAllData();
+            log(data.toString());
+          },
+          onDoubleTap: () async {
+            SqfliteServices sqfliteServices = SqfliteServices();
+            var data = await sqfliteServices.deleteAllData();
+            log(data.toString());
+          },
           child: Badge(
             smallSize: 12,
             backgroundColor: AppColors.primaryColor,

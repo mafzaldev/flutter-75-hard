@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.green,
                     ),
                     title: "Follow a diet plan",
-                    status: progressProvider.diet!,
+                    status: progressProvider.diet,
                     onTap: () {
                       Utils.navigateTo(
                           context,
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             icon: Icons.restaurant_outlined,
                             tip: 'Create a healthy diet plan and follow it.',
                             unit: 1.0,
-                            progress: progressProvider.diet!,
+                            progress: progressProvider.diet,
                             goal: 1,
                             progressColor: Colors.green,
                             onPressed: (double value) => {
@@ -177,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.red,
                     ),
                     title: "45-minute workout",
-                    status: progressProvider.workout!,
+                    status: progressProvider.workout,
                     onTap: () {
                       Utils.navigateTo(
                           context,
@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             tip:
                                 'Do a 45-minute workout, it can be anything. Just move your body in a way that makes you sweat.',
                             unit: 0.0222222222222222,
-                            progress: progressProvider.workout!,
+                            progress: progressProvider.workout,
                             goal: 45,
                             progressColor: Colors.red,
                             onPressed: (double value) => {
@@ -204,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.amber,
                     ),
                     title: "Take a progress picture",
-                    status: progressProvider.picture!,
+                    status: progressProvider.picture,
                     onTap: () {
                       Utils.navigateTo(
                           context,
@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             tip:
                                 'Click a picture of yourself and save it. So that you can see your progress in the future.',
                             unit: 1.0,
-                            progress: progressProvider.picture!,
+                            progress: progressProvider.picture,
                             goal: 1,
                             progressColor: Colors.amber,
                             onPressed: (double value) => {
@@ -231,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.blue,
                     ),
                     title: "Drink 1 gallon of water",
-                    status: progressProvider.water!,
+                    status: progressProvider.water,
                     onTap: () {
                       Utils.navigateTo(
                           context,
@@ -241,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             tip:
                                 '1 gallon consists of 16 glasses of water. So, the goal is to drink 16 glasses of water.',
                             unit: 0.0625,
-                            progress: progressProvider.water!,
+                            progress: progressProvider.water,
                             goal: 16,
                             progressColor: Colors.blue,
                             onPressed: (double value) => {
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.orange,
                     ),
                     title: "Read 10 pages of a book",
-                    status: progressProvider.reading!,
+                    status: progressProvider.reading,
                     onTap: () {
                       Utils.navigateTo(
                           context,
@@ -268,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             tip:
                                 'Pick a book and read 10 pages of it. That\'s it. The book could be of any genre.',
                             unit: 0.1,
-                            progress: progressProvider.reading!,
+                            progress: progressProvider.reading,
                             goal: 10,
                             progressColor: Colors.orange,
                             onPressed: (double value) => {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/widgets/action_button.dart';
+import 'package:seventy_five_hard/widgets/custom_progress_indicator.dart';
 
 class ProgressScreen extends StatefulWidget {
   final String tip;
@@ -55,27 +54,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularPercentIndicator(
-                  radius: 100.0,
-                  lineWidth: 20.0,
-                  animation: true,
-                  percent: _progress,
-                  center: Text(
-                    '${(_progress * 100).toStringAsFixed(0)}%',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 28.0),
-                  ),
-                  footer: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: Text(
-                      "Today's ${Utils.tasks[widget.appBarTitle]}${(_progress * widget.goal).round()}/${widget.goal}",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 24.0),
-                    ),
-                  ),
-                  circularStrokeCap: CircularStrokeCap.round,
-                  progressColor: widget.progressColor,
-                  backgroundColor: Colors.white),
+              CustomPercentIndicator(
+                progress: _progress,
+                goal: widget.goal,
+                color: widget.progressColor,
+                title: "Today's ${widget.appBarTitle.toLowerCase()}",
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

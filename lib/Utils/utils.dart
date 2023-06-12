@@ -1,6 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class AppColors {
+  static const primaryColor = Color(0xFFdb0606);
+  static const white = Color(0xFFFFFFFF);
+}
 
 class Utils {
   static const String supabaseUrl = 'https://vakxwprknaxjfqiservq.supabase.co';
@@ -51,9 +57,15 @@ class Utils {
     "Water": "water progress: ",
     "Reading": "reading progress: ",
   };
-}
 
-class AppColors {
-  static const primaryColor = Color(0xFFdb0606);
-  static const white = Color(0xFFFFFFFF);
+  static void clearPreferences(int nextDay) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setInt('currentDay', nextDay);
+    await prefs.setDouble('diet', 0.0);
+    await prefs.setDouble('workout', 0.0);
+    await prefs.setDouble('picture', 0.0);
+    await prefs.setDouble('water', 0.0);
+    await prefs.setDouble('reading', 0.0);
+  }
 }
