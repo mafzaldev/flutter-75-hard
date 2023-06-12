@@ -52,15 +52,19 @@ class Greetings extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-                border: Border.all(color: AppColors.primaryColor),
-                borderRadius: BorderRadius.circular(10)),
-            child: Text(
-              'Day: $day',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ))
+        InkWell(
+          onTap: () {},
+          child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.primaryColor),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Text(
+                'Day: $day',
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              )),
+        )
       ],
     );
   }

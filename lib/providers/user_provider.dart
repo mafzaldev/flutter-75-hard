@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:seventy_five_hard/models/user_model.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
@@ -8,6 +10,7 @@ class UserProvider with ChangeNotifier {
 
   void setUser(User? user) {
     _user = user;
+    log("_user: $_user.username");
     notifyListeners();
   }
 
