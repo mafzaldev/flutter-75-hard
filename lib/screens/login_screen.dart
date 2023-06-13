@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:seventy_five_hard/providers/progress_provider.dart';
+
 import 'package:seventy_five_hard/screens/home_screen.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/models/user_model.dart';
@@ -105,6 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
             imageUrl: response["imageUrl"]),
       );
       userProvider.setDefaultPenalty(defaultPenalty);
+      _setProgress();
       Utils.navigateTo(context, const HomeScreen(), replace: true);
     }
     setState(() {
@@ -112,5 +115,24 @@ class _LoginScreenState extends State<LoginScreen> {
       emailController.clear();
       passwordController.clear();
     });
+  }
+
+  _setProgress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int currentDay = prefs.getInt('currentDay') ?? 1;
+    final double diet = prefs.getDouble('diet') ?? 0.0;
+    final double workout = prefs.getDouble('workout') ?? 0.0;
+    final double picture = prefs.getDouble('picture') ?? 0.0;
+    final double water = prefs.getDouble('water') ?? 0.0;
+    final double reading = prefs.getDouble('reading') ?? 0.0;
+
+    Provider.of<ProgressProvider>(context, listen: false).setProgress(
+      currentDay,
+      diet,
+      reading,
+      picture,
+      workout,
+      water,
+    );
   }
 }

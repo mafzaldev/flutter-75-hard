@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as state_provider;
 import 'package:seventy_five_hard/providers/progress_provider.dart';
@@ -35,14 +37,14 @@ class _SplashScreenState extends State<SplashScreen> {
     _redirectCalled = true;
     final session = supabase.auth.currentSession;
     if (session != null) {
-      _getProgress();
+      _setProgress();
       Utils.navigateTo(context, const HomeScreen(), replace: true);
     } else {
       Utils.navigateTo(context, const LoginScreen(), replace: true);
     }
   }
 
-  _getProgress() async {
+  _setProgress() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int currentDay = prefs.getInt('currentDay') ?? 1;
     final double diet = prefs.getDouble('diet') ?? 0.0;
@@ -50,6 +52,8 @@ class _SplashScreenState extends State<SplashScreen> {
     final double picture = prefs.getDouble('picture') ?? 0.0;
     final double water = prefs.getDouble('water') ?? 0.0;
     final double reading = prefs.getDouble('reading') ?? 0.0;
+
+    log('currentDay: $currentDay, diet: $diet, workout: $workout, picture: $picture, water: $water, reading: $reading');
 
     state_provider.Provider.of<ProgressProvider>(context, listen: false)
         .setProgress(
