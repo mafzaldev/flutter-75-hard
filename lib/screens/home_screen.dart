@@ -1,5 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as state_provider;
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -35,48 +38,24 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _getQuotes();
     _getProfile();
-  }
-
-  _getQuotes() async {
-    APIServices apiServices = APIServices.instance;
-    quotes = await apiServices.fetchQuotes();
-    setState(() {
-      quotesLoading = false;
-    });
-  }
-
-  _getProfile() async {
-    SupabaseServices supabaseServices = SupabaseServices.instance;
-    supabase.auth.onAuthStateChange.listen((data) async {
-      final AuthChangeEvent event = data.event;
-      if (event == AuthChangeEvent.signedIn) {
-        final User? user = supabase.auth.currentUser;
-        final imageUrl = await supabaseServices.getUserAvatar(user!.email!);
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
-
-        state_provider.Provider.of<UserProvider>(context, listen: false)
-            .setUser(
-          user_model.User(
-            email: user.email!,
-            username: user.userMetadata!['username'],
-            imageUrl: imageUrl,
-          ),
-        );
-        state_provider.Provider.of<UserProvider>(context, listen: false)
-            .setDefaultPenalty(defaultPenalty);
+    Timer.periodic(const Duration(seconds: 30), (timer) {
+      final currentTime = DateTime.now();
+      if (currentTime.hour == Utils.time['hour'] &&
+          currentTime.minute == Utils.time['minute']) {
+        log('Retrieving data from SharedPreferences....');
+        _getProgress();
+        timer.cancel();
+      } else {
+        log('Not ${Utils.time['hour']} ${Utils.time['minute']} PM',
+            name: 'Home Screen');
       }
-      setState(() {
-        profileLoading = false;
-      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider =
-        state_provider.Provider.of<UserProvider>(context);
-    ProgressProvider progressProvider =
+    final userProvider = state_provider.Provider.of<UserProvider>(context);
+    final progressProvider =
         state_provider.Provider.of<ProgressProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -296,6 +275,53 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
     );
+  }
+
+  _getQuotes() async {
+    APIServices apiServices = APIServices.instance;
+    quotes = await apiServices.fetchQuotes();
+    setState(() {
+      quotesLoading = false;
+    });
+  }
+
+  _getProgress() async {
+    Map<String, dynamic> preferences = await Utils.getPreferences();
+    state_provider.Provider.of<ProgressProvider>(context, listen: false)
+        .setProgress(
+            day: preferences['currentDay'],
+            diet: preferences['diet'],
+            reading: preferences['reading'],
+            picture: preferences['picture'],
+            workout: preferences['workout'],
+            water: preferences['water']);
+  }
+
+  _getProfile() async {
+    SupabaseServices supabaseServices = SupabaseServices.instance;
+    supabase.auth.onAuthStateChange.listen((data) async {
+      final AuthChangeEvent event = data.event;
+      if (event == AuthChangeEvent.signedIn) {
+        final User? user = supabase.auth.currentUser;
+        final imageUrl = await supabaseServices.getUserAvatar(user!.email!);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
+
+        state_provider.Provider.of<UserProvider>(context, listen: false)
+            .setUser(
+          user_model.User(
+            email: user.email!,
+            username: user.userMetadata!['username'],
+            imageUrl: imageUrl,
+          ),
+        );
+        state_provider.Provider.of<UserProvider>(context, listen: false)
+            .setDefaultPenalty(defaultPenalty);
+      }
+      setState(() {
+        profileLoading = false;
+      });
+    });
   }
 
   FadeAnimatedText getQuoteText(quote) {

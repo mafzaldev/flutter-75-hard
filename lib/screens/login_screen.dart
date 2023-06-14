@@ -127,12 +127,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final double reading = prefs.getDouble('reading') ?? 0.0;
 
     Provider.of<ProgressProvider>(context, listen: false).setProgress(
-      currentDay,
-      diet,
-      reading,
-      picture,
-      workout,
-      water,
+      day: currentDay,
+      diet: diet,
+      reading: reading,
+      picture: picture,
+      workout: workout,
+      water: water,
     );
   }
 }

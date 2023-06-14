@@ -28,10 +28,13 @@ class HistoryScreen extends StatelessWidget {
               final day = index + 1;
               return InkWell(
                 onTap: () {
-                  day != progressProvider.day!
+                  day < progressProvider.day!
                       ? Utils.navigateTo(
                           context, HistoryProgressScreen(day: day))
-                      : Navigator.pop(context);
+                      : day == progressProvider.day!
+                          ? Navigator.pop(context)
+                          : Utils.showToast(
+                              "You can't see the future, you can only see the past");
                 },
                 child: Container(
                   margin: const EdgeInsets.all(5),

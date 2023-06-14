@@ -54,8 +54,8 @@ class Greetings extends StatelessWidget {
         ),
         const Spacer(),
         InkWell(
-          onTap: () {},
-          child: Container(
+            onTap: () {},
+            child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   border: Border.all(color: AppColors.primaryColor),
@@ -64,8 +64,8 @@ class Greetings extends StatelessWidget {
                 'Day: $day',
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              )),
-        )
+              ),
+            )),
       ],
     );
   }

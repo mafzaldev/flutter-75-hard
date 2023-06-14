@@ -46,8 +46,13 @@ class ProgressProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setProgress(int? day, double diet, double reading, double picture,
-      double workout, double water) {
+  void setProgress(
+      {required int? day,
+      required double diet,
+      required double reading,
+      required double picture,
+      required double workout,
+      required double water}) {
     _day = day;
     _diet = diet;
     _reading = reading;

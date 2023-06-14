@@ -30,7 +30,6 @@ class _HistoryProgressScreenState extends State<HistoryProgressScreen> {
         progress = singleDayProgress;
         isLoading = false;
       });
-      Utils.showToast(singleDayProgress.toString());
     } catch (e) {
       Utils.showToast(e.toString());
     }

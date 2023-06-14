@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,12 +51,9 @@ class Utils {
     'inspirational'
   ];
 
-  static Map<String, String> tasks = {
-    "Diet": "diet progress: ",
-    "Workout": "workout progress: ",
-    "Picture": "picture progress: ",
-    "Water": "water progress: ",
-    "Reading": "reading progress: ",
+  static Map<String, dynamic> time = {
+    'hour': 18,
+    'minute': 25,
   };
 
   static void clearPreferences(int nextDay) async {
@@ -67,5 +65,27 @@ class Utils {
     await prefs.remove("picture");
     await prefs.remove("water");
     await prefs.remove("reading");
+  }
+
+  static Future<Map<String, dynamic>> getPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final int currentDay = prefs.getInt('currentDay') ?? 1;
+    final double diet = prefs.getDouble('diet') ?? 0.0;
+    final double workout = prefs.getDouble('workout') ?? 0.0;
+    final double picture = prefs.getDouble('picture') ?? 0.0;
+    final double water = prefs.getDouble('water') ?? 0.0;
+    final double reading = prefs.getDouble('reading') ?? 0.0;
+    final bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
+
+    return {
+      'currentDay': currentDay,
+      'diet': diet,
+      'workout': workout,
+      'picture': picture,
+      'water': water,
+      'reading': reading,
+      'defaultPenalty': defaultPenalty
+    };
   }
 }

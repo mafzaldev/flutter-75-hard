@@ -2,49 +2,56 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart' as state_provider;
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:seventy_five_hard/services/sqflite_services.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/screens/splash_screen.dart';
 import 'package:seventy_five_hard/providers/progress_provider.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
 
-void saveProgress() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
+Future<void> saveProgress() async {
   SqfliteServices sqfliteServices = SqfliteServices();
-
-  final int currentDay = prefs.getInt('currentDay') ?? 1;
-  final double diet = prefs.getDouble('diet') ?? 0.0;
-  final double workout = prefs.getDouble('workout') ?? 0.0;
-  final double picture = prefs.getDouble('picture') ?? 0.0;
-  final double water = prefs.getDouble('water') ?? 0.0;
-  final double reading = prefs.getDouble('reading') ?? 0.0;
-  final bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
+  Map<String, dynamic> preferences = await Utils.getPreferences();
 
   final currentTime = DateTime.now();
-  if (currentTime.hour == 10 && currentTime.minute == 30) {
-    if (defaultPenalty) {
-      if (diet == 0.0 ||
-          workout == 0.0 ||
-          picture == 0.0 ||
-          water == 0.0 ||
-          reading == 0.0) {
+  if (currentTime.hour == Utils.time['hour'] &&
+      currentTime.minute == Utils.time['minute'] - 1) {
+    if (preferences['defaultPenalty']) {
+      if (preferences['diet'] == 0.0 ||
+          preferences['workout'] == 0.0 ||
+          preferences['picture'] == 0.0 ||
+          preferences['water'] == 0.0 ||
+          preferences['reading'] == 0.0) {
         await sqfliteServices.deleteAllData();
         Utils.clearPreferences(1);
-        log('deleteAllData');
+        log('Deleting data in local storage and updating shared preferences....');
       } else {
         await sqfliteServices.insertData(
-            currentDay, diet, workout, picture, water, reading);
-        Utils.clearPreferences(currentDay + 1);
-        log('insertData');
+            preferences['currentDay'],
+            preferences['diet'],
+            preferences['workout'],
+            preferences['picture'],
+            preferences['water'],
+            preferences['reading']);
+        Utils.clearPreferences(preferences['currentDay'] + 1);
+        log('Inserting data in local storage and updating shared preferences while default penalty is true....');
       }
+    } else {
+      await sqfliteServices.insertData(
+          preferences['currentDay'],
+          preferences['diet'],
+          preferences['workout'],
+          preferences['picture'],
+          preferences['water'],
+          preferences['reading']);
+      Utils.clearPreferences(preferences['currentDay'] + 1);
+      log('Inserting data in local storage and updating shared preferences....');
     }
   } else {
-    log('Not 10:30 AM');
+    log('Not ${Utils.time['hour']} ${Utils.time['minute']} PM', name: 'main');
   }
 }
 
@@ -55,19 +62,22 @@ Future<void> main() async {
     anonKey: Utils.publicAnonKey,
   );
 
-  //NotificationService.scheduleNotification();
+  /*NotificationService.scheduleNotification();*/
   await AndroidAlarmManager.initialize();
-
   await AndroidAlarmManager.periodic(
     const Duration(days: 1),
     1100,
     saveProgress,
     startAt: DateTime(
-        DateTime.now().year, DateTime.now().month, DateTime.now().day, 10, 30),
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      Utils.time['hour'],
+      Utils.time['minute'] - 2,
+    ),
     exact: true,
     wakeup: true,
   );
-
   runApp(const MainApp());
 }
 

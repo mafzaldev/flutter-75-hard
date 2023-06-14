@@ -5,6 +5,7 @@ class RuleCard extends StatelessWidget {
   final Icon icon;
   final double status;
   final Function()? onTap;
+
   const RuleCard({
     super.key,
     required this.title,

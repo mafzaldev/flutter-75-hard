@@ -24,7 +24,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   getPreferences() {
-    UserProvider userProvider = Provider.of<UserProvider>(context,listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     setState(() {
       isLoading = false;
       defaultPenalty = userProvider.defaultPenalty;
