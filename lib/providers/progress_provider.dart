@@ -61,17 +61,4 @@ class ProgressProvider with ChangeNotifier {
     _water = water;
     notifyListeners();
   }
-
-  /* 
-  void saveProgress() async {
-    SqfliteServices sqfliteServices = SqfliteServices();
-    try {
-      int res = await sqfliteServices.insertData(
-          day!, diet, workout, picture, water, reading);
-      Utils.clearPreferences(day! + 1);
-      Utils.showToast(res.toString());
-    } catch (e) {
-      Utils.showToast(e.toString());
-    }
-  }*/
 }

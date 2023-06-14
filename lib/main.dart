@@ -2,57 +2,28 @@
 
 import 'dart:async';
 import 'dart:developer';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:seventy_five_hard/services/notifications_service.dart';
+import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart' as state_provider;
-import 'package:seventy_five_hard/services/sqflite_services.dart';
-import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/screens/splash_screen.dart';
 import 'package:seventy_five_hard/providers/progress_provider.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
+import 'package:workmanager/workmanager.dart';
 
-Future<void> saveProgress() async {
-  SqfliteServices sqfliteServices = SqfliteServices();
-  Map<String, dynamic> preferences = await Utils.getPreferences();
-
-  final currentTime = DateTime.now();
-  if (currentTime.hour == Utils.time['hour'] &&
-      currentTime.minute == Utils.time['minute'] - 1) {
-    if (preferences['defaultPenalty']) {
-      if (preferences['diet'] == 0.0 ||
-          preferences['workout'] == 0.0 ||
-          preferences['picture'] == 0.0 ||
-          preferences['water'] == 0.0 ||
-          preferences['reading'] == 0.0) {
-        await sqfliteServices.deleteAllData();
-        Utils.clearPreferences(1);
-        log('Deleting data in local storage and updating shared preferences....');
-      } else {
-        await sqfliteServices.insertData(
-            preferences['currentDay'],
-            preferences['diet'],
-            preferences['workout'],
-            preferences['picture'],
-            preferences['water'],
-            preferences['reading']);
-        Utils.clearPreferences(preferences['currentDay'] + 1);
-        log('Inserting data in local storage and updating shared preferences while default penalty is true....');
-      }
-    } else {
-      await sqfliteServices.insertData(
-          preferences['currentDay'],
-          preferences['diet'],
-          preferences['workout'],
-          preferences['picture'],
-          preferences['water'],
-          preferences['reading']);
-      Utils.clearPreferences(preferences['currentDay'] + 1);
-      log('Inserting data in local storage and updating shared preferences....');
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case "saveProgress":
+        log(
+          "This is a background task called from native!",
+          name: "Background Fetch",
+        );
+        break;
     }
-  } else {
-    log('Not ${Utils.time['hour']} ${Utils.time['minute']} PM', name: 'main');
-  }
+    return Future.value(true);
+  });
 }
 
 Future<void> main() async {
@@ -61,13 +32,25 @@ Future<void> main() async {
     url: Utils.supabaseUrl,
     anonKey: Utils.publicAnonKey,
   );
-
-  /*NotificationService.scheduleNotification();*/
-  await AndroidAlarmManager.initialize();
+  await Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: true,
+  );
+  await Workmanager().registerPeriodicTask(
+    "75",
+    "saveProgress",
+    frequency: const Duration(minutes: 15),
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+    ),
+  );
+  NotificationService().initNotification();
+  NotificationService().scheduleNotification();
+  /*await AndroidAlarmManager.initialize();
   await AndroidAlarmManager.periodic(
     const Duration(days: 1),
     1100,
-    saveProgress,
+    Utils.saveProgress,
     startAt: DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -77,7 +60,7 @@ Future<void> main() async {
     ),
     exact: true,
     wakeup: true,
-  );
+  );*/
   runApp(const MainApp());
 }
 

@@ -1,7 +1,9 @@
 import 'dart:math';
+import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:seventy_five_hard/services/sqflite_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppColors {
@@ -51,6 +53,18 @@ class Utils {
     'inspirational'
   ];
 
+  static List<String> reminders = [
+    "Keep grinding...",
+    "Drink water, stay hydrated...",
+    "Take a picture, to reflect on your progress in the future...",
+    "Read 10 pages of a non-fiction book to get wisdom...",
+    "Keep pushing...",
+    "Take care of your diet, eat healthy...",
+    "Workout, get stronger...",
+    "Stay focused...",
+    "Stay motivated...",
+  ];
+
   static Map<String, dynamic> time = {
     'hour': 18,
     'minute': 25,
@@ -87,5 +101,52 @@ class Utils {
       'reading': reading,
       'defaultPenalty': defaultPenalty
     };
+  }
+
+  static Future<void> saveProgress() async {
+    SqfliteServices sqfliteServices = SqfliteServices();
+    Map<String, dynamic> preferences = await Utils.getPreferences();
+
+    final currentTime = DateTime.now();
+    if (currentTime.hour == Utils.time['hour'] &&
+        currentTime.minute == Utils.time['minute'] - 1) {
+      if (preferences['defaultPenalty']) {
+        if (preferences['diet'] == 0.0 ||
+            preferences['workout'] == 0.0 ||
+            preferences['picture'] == 0.0 ||
+            preferences['water'] == 0.0 ||
+            preferences['reading'] == 0.0) {
+          await sqfliteServices.deleteAllData();
+          Utils.clearPreferences(1);
+          dev.log(
+              'Deleting data in local storage and updating shared preferences....');
+        } else {
+          await sqfliteServices.insertData(
+              preferences['currentDay'],
+              preferences['diet'],
+              preferences['workout'],
+              preferences['picture'],
+              preferences['water'],
+              preferences['reading']);
+          Utils.clearPreferences(preferences['currentDay'] + 1);
+          dev.log(
+              'Inserting data in local storage and updating shared preferences while default penalty is true....');
+        }
+      } else {
+        await sqfliteServices.insertData(
+            preferences['currentDay'],
+            preferences['diet'],
+            preferences['workout'],
+            preferences['picture'],
+            preferences['water'],
+            preferences['reading']);
+        Utils.clearPreferences(preferences['currentDay'] + 1);
+        dev.log(
+            'Inserting data in local storage and updating shared preferences....');
+      }
+    } else {
+      dev.log('Not ${Utils.time['hour']} ${Utils.time['minute']} PM',
+          name: 'main');
+    }
   }
 }
