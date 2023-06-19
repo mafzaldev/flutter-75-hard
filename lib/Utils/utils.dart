@@ -16,6 +16,8 @@ class Utils {
   static const String publicAnonKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZha3h3cHJrbmF4amZxaXNlcnZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU5NzQxMTEsImV4cCI6MjAwMTU1MDExMX0.MBYwPdun3ORCQaOlMHoZC6tseCPe80FlZBJ5v_nzpeM';
 
+  static const String notificationMessage =
+      "Get ready for the 75 Hard Challenge! Stay motivated, focused, and disciplined. Drink water,exercise, eat healthy, and read daily. Reflect on your progress and push yourself to new limits. Let's do this!";
   static showToast(String text) {
     Fluttertoast.showToast(
       msg: text,
@@ -53,27 +55,28 @@ class Utils {
     'inspirational'
   ];
 
-  static List<String> reminders = [
-    "Keep grinding...",
-    "Drink water, stay hydrated...",
-    "Take a picture, to reflect on your progress in the future...",
-    "Read 10 pages of a non-fiction book to get wisdom...",
-    "Keep pushing...",
-    "Take care of your diet, eat healthy...",
-    "Workout, get stronger...",
-    "Stay focused...",
-    "Stay motivated...",
+  static List<String> bookCategories = [
+    'business',
+    'leadership',
+    'hope',
+    'life',
+    'freedom',
+    'success',
+    'inspirational',
+    'motivational',
+    'experience',
   ];
 
   static Map<String, dynamic> time = {
-    'hour': 18,
-    'minute': 25,
+    'hour': 14,
+    'minute': 45,
   };
 
   static void clearPreferences(int nextDay) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt('currentDay', nextDay);
+    await prefs.setBool('75Hard-isProgressSaved', true);
     await prefs.remove("diet");
     await prefs.remove("workout");
     await prefs.remove("picture");
@@ -103,35 +106,50 @@ class Utils {
     };
   }
 
+  static Future<bool> checkIfLoggedIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    final bool isLoggedIn = prefs.getBool('75Hard-isLoggedIn') ?? false;
+    return isLoggedIn;
+  }
+
+  static Future<bool> checkIfProgressSaved() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    bool isProgressSaved = prefs.getBool('75Hard-isProgressSaved') ?? false;
+
+    final currentTime = DateTime.now();
+
+    if (isProgressSaved && currentTime.hour == Utils.time['hour'] - 1) {
+      dev.log('Progress is saved but time is ${Utils.time['hour']}');
+      return false;
+    } else if (isProgressSaved && currentTime.hour != Utils.time['hour'] - 1) {
+      dev.log('Progress is saved but time is not ${Utils.time['hour']}');
+      return true;
+    }
+    dev.log('Progress is not saved');
+    return isProgressSaved;
+  }
+
+  @pragma('vm:entry-point')
   static Future<void> saveProgress() async {
+    bool isLoggedIn = await checkIfLoggedIn();
+    if (!isLoggedIn) return;
+    dev.log('User is logged in');
+
     SqfliteServices sqfliteServices = SqfliteServices();
     Map<String, dynamic> preferences = await Utils.getPreferences();
 
-    final currentTime = DateTime.now();
-    if (currentTime.hour == Utils.time['hour'] &&
-        currentTime.minute == Utils.time['minute'] - 1) {
-      if (preferences['defaultPenalty']) {
-        if (preferences['diet'] == 0.0 ||
-            preferences['workout'] == 0.0 ||
-            preferences['picture'] == 0.0 ||
-            preferences['water'] == 0.0 ||
-            preferences['reading'] == 0.0) {
-          await sqfliteServices.deleteAllData();
-          Utils.clearPreferences(1);
-          dev.log(
-              'Deleting data in local storage and updating shared preferences....');
-        } else {
-          await sqfliteServices.insertData(
-              preferences['currentDay'],
-              preferences['diet'],
-              preferences['workout'],
-              preferences['picture'],
-              preferences['water'],
-              preferences['reading']);
-          Utils.clearPreferences(preferences['currentDay'] + 1);
-          dev.log(
-              'Inserting data in local storage and updating shared preferences while default penalty is true....');
-        }
+    if (preferences['defaultPenalty']) {
+      if (preferences['diet'] == 0.0 ||
+          preferences['workout'] == 0.0 ||
+          preferences['picture'] == 0.0 ||
+          preferences['water'] == 0.0 ||
+          preferences['reading'] == 0.0) {
+        await sqfliteServices.deleteAllData();
+        Utils.clearPreferences(1);
+        dev.log(
+            'Deleting data in local storage and updating shared preferences....');
       } else {
         await sqfliteServices.insertData(
             preferences['currentDay'],
@@ -142,11 +160,19 @@ class Utils {
             preferences['reading']);
         Utils.clearPreferences(preferences['currentDay'] + 1);
         dev.log(
-            'Inserting data in local storage and updating shared preferences....');
+            'Inserting data in local storage and updating shared preferences while default penalty is true....');
       }
     } else {
-      dev.log('Not ${Utils.time['hour']} ${Utils.time['minute']} PM',
-          name: 'main');
+      await sqfliteServices.insertData(
+          preferences['currentDay'],
+          preferences['diet'],
+          preferences['workout'],
+          preferences['picture'],
+          preferences['water'],
+          preferences['reading']);
+      Utils.clearPreferences(preferences['currentDay'] + 1);
+      dev.log(
+          'Inserting data in local storage and updating shared preferences....');
     }
   }
 }

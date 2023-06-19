@@ -39,6 +39,7 @@ class HistoryScreen extends StatelessWidget {
                 child: Container(
                   margin: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
                     color: day < progressProvider.day!
                         ? Colors.green
                         : day == progressProvider.day!

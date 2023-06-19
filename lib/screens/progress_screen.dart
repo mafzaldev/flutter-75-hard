@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:seventy_five_hard/screens/books_screen.dart';
+import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/widgets/action_button.dart';
 import 'package:seventy_five_hard/widgets/custom_progress_indicator.dart';
 
@@ -107,13 +109,30 @@ class _ProgressScreenState extends State<ProgressScreen> {
               const SizedBox(
                 height: 150,
               ),
-              Text(
-                "Note: ${widget.tip}",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
+              Column(
+                children: [
+                  Text(
+                    widget.tip,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
+                  ),
+                  widget.appBarTitle == "Reading"
+                      ? TextButton(
+                          onPressed: () =>
+                              Utils.navigateTo(context, const BooksScreen()),
+                          child: const Text(
+                            "Explore Books",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
+                          ))
+                      : const SizedBox()
+                ],
               ),
             ],
           ),

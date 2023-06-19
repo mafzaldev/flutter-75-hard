@@ -125,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final double picture = prefs.getDouble('picture') ?? 0.0;
     final double water = prefs.getDouble('water') ?? 0.0;
     final double reading = prefs.getDouble('reading') ?? 0.0;
+    await prefs.setBool('75Hard-isLoggedIn', true);
 
     Provider.of<ProgressProvider>(context, listen: false).setProgress(
       day: currentDay,

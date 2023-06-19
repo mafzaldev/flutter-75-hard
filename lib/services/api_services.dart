@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:seventy_five_hard/models/book_model.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 
 class APIConstants {
@@ -36,11 +37,34 @@ class APIServices {
         final body = jsonDecode(response.body);
         quotes = body.map((e) => e["quote"]).toList().cast<String>();
       } else {
-        throw '${response.statusCode}: Error Occurred';
+        throw 'Error Occurred: ${response.statusCode}';
       }
     } catch (e) {
-      log(e.toString());
+      log(e.toString(), name: "Quotes API");
     }
     return quotes;
+  }
+
+  Future<List<BookModel>> fetchBooks() async {
+    List<BookModel> books = [];
+    int categoryIndex =
+        Utils.generateRandomNumber(0, Utils.bookCategories.length - 1);
+    String apiEndpoint =
+        "${APIConstants.booksBaseUrl}?q=${Utils.bookCategories[categoryIndex]}&maxResults=10&key=${APIConstants.booksApiKey}&fields=items(volumeInfo(title, authors, description, imageLinks/smallThumbnail))&startIndex=$categoryIndex";
+    try {
+      final response = await http.get(Uri.parse(apiEndpoint));
+
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        books = body["items"]
+            .map<BookModel>((e) => BookModel.fromJson(e["volumeInfo"]))
+            .toList();
+      } else {
+        throw 'Error Occurred: ${response.statusCode}';
+      }
+    } catch (e) {
+      log(e.toString(), name: "Books API");
+    }
+    return books;
   }
 }

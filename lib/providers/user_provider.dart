@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:seventy_five_hard/models/user_model.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider with ChangeNotifier {
   User? _user;
@@ -21,6 +22,8 @@ class UserProvider with ChangeNotifier {
 
   void logOut() async {
     SupabaseServices supabaseServices = SupabaseServices.instance;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('75Hard-isLoggedIn', false);
     supabaseServices.logout();
     _user = null;
     _defaultPenalty = null;

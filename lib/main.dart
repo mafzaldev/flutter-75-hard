@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:developer';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:seventy_five_hard/services/notifications_service.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
@@ -10,21 +10,6 @@ import 'package:provider/provider.dart' as state_provider;
 import 'package:seventy_five_hard/screens/splash_screen.dart';
 import 'package:seventy_five_hard/providers/progress_provider.dart';
 import 'package:seventy_five_hard/providers/user_provider.dart';
-import 'package:workmanager/workmanager.dart';
-
-void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    switch (task) {
-      case "saveProgress":
-        log(
-          "This is a background task called from native!",
-          name: "Background Fetch",
-        );
-        break;
-    }
-    return Future.value(true);
-  });
-}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,21 +17,10 @@ Future<void> main() async {
     url: Utils.supabaseUrl,
     anonKey: Utils.publicAnonKey,
   );
-  await Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: true,
-  );
-  await Workmanager().registerPeriodicTask(
-    "75",
-    "saveProgress",
-    frequency: const Duration(minutes: 15),
-    constraints: Constraints(
-      networkType: NetworkType.connected,
-    ),
-  );
+
   NotificationService().initNotification();
   NotificationService().scheduleNotification();
-  /*await AndroidAlarmManager.initialize();
+  await AndroidAlarmManager.initialize();
   await AndroidAlarmManager.periodic(
     const Duration(days: 1),
     1100,
@@ -60,7 +34,7 @@ Future<void> main() async {
     ),
     exact: true,
     wakeup: true,
-  );*/
+  );
   runApp(const MainApp());
 }
 
