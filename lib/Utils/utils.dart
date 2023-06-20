@@ -68,8 +68,8 @@ class Utils {
   ];
 
   static Map<String, dynamic> time = {
-    'hour': 22,
-    'minute': 35,
+    'hour': 23,
+    'minute': 30,
   };
 
   static void clearPreferences(int nextDay, bool isDeleted) async {
@@ -115,28 +115,12 @@ class Utils {
     return isLoggedIn;
   }
 
-  static Future<bool> checkIfProgressSaved() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-    bool isProgressSaved = prefs.getBool('75Hard-isProgressSaved') ?? false;
-
-    final currentTime = DateTime.now();
-
-    if (isProgressSaved && currentTime.hour == Utils.time['hour'] - 1) {
-      dev.log('Progress is saved but time is ${Utils.time['hour']}');
-      return false;
-    } else if (isProgressSaved && currentTime.hour != Utils.time['hour'] - 1) {
-      dev.log('Progress is saved but time is not ${Utils.time['hour']}');
-      return true;
-    }
-    dev.log('Progress is not saved');
-    return isProgressSaved;
-  }
-
   @pragma('vm:entry-point')
   static Future<void> saveProgress() async {
-    final currentTime = DateTime.now();
+    bool isLoggedIn = await checkIfLoggedIn();
+    if (!isLoggedIn) return;
 
+    final currentTime = DateTime.now();
     if (currentTime.hour != Utils.time['hour'] ||
         currentTime.minute != Utils.time['minute'] - 1) {
       dev.log(
@@ -145,10 +129,6 @@ class Utils {
       );
       return;
     }
-
-    bool isLoggedIn = await checkIfLoggedIn();
-    if (!isLoggedIn) return;
-    dev.log('User is logged in');
 
     SqfliteServices sqfliteServices = SqfliteServices();
     Map<String, dynamic> preferences = await Utils.getPreferences();
