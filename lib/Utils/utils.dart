@@ -68,15 +68,15 @@ class Utils {
   ];
 
   static Map<String, dynamic> time = {
-    'hour': 14,
-    'minute': 45,
+    'hour': 22,
+    'minute': 35,
   };
 
-  static void clearPreferences(int nextDay) async {
+  static void clearPreferences(int nextDay, bool isDeleted) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setInt('currentDay', nextDay);
-    await prefs.setBool('75Hard-isProgressSaved', true);
+    await prefs.setBool('isDeleted', isDeleted);
     await prefs.remove("diet");
     await prefs.remove("workout");
     await prefs.remove("picture");
@@ -94,6 +94,7 @@ class Utils {
     final double water = prefs.getDouble('water') ?? 0.0;
     final double reading = prefs.getDouble('reading') ?? 0.0;
     final bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
+    final bool isDeleted = prefs.getBool('isDeleted') ?? false;
 
     return {
       'currentDay': currentDay,
@@ -102,7 +103,8 @@ class Utils {
       'picture': picture,
       'water': water,
       'reading': reading,
-      'defaultPenalty': defaultPenalty
+      'defaultPenalty': defaultPenalty,
+      'isDeleted': isDeleted,
     };
   }
 
@@ -133,6 +135,17 @@ class Utils {
 
   @pragma('vm:entry-point')
   static Future<void> saveProgress() async {
+    final currentTime = DateTime.now();
+
+    if (currentTime.hour != Utils.time['hour'] ||
+        currentTime.minute != Utils.time['minute'] - 1) {
+      dev.log(
+        name: "saveProgress",
+        'Time is not ${Utils.time['hour']}:${Utils.time['minute'] - 1}',
+      );
+      return;
+    }
+
     bool isLoggedIn = await checkIfLoggedIn();
     if (!isLoggedIn) return;
     dev.log('User is logged in');
@@ -147,8 +160,10 @@ class Utils {
           preferences['water'] == 0.0 ||
           preferences['reading'] == 0.0) {
         await sqfliteServices.deleteAllData();
-        Utils.clearPreferences(1);
+
+        Utils.clearPreferences(1, true);
         dev.log(
+            name: "saveProgress",
             'Deleting data in local storage and updating shared preferences....');
       } else {
         await sqfliteServices.insertData(
@@ -158,8 +173,10 @@ class Utils {
             preferences['picture'],
             preferences['water'],
             preferences['reading']);
-        Utils.clearPreferences(preferences['currentDay'] + 1);
+
+        Utils.clearPreferences(preferences['currentDay'] + 1, false);
         dev.log(
+            name: "saveProgress",
             'Inserting data in local storage and updating shared preferences while default penalty is true....');
       }
     } else {
@@ -170,8 +187,10 @@ class Utils {
           preferences['picture'],
           preferences['water'],
           preferences['reading']);
-      Utils.clearPreferences(preferences['currentDay'] + 1);
+
+      Utils.clearPreferences(preferences['currentDay'] + 1, false);
       dev.log(
+          name: "saveProgress",
           'Inserting data in local storage and updating shared preferences....');
     }
   }

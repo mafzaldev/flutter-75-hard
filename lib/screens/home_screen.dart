@@ -5,8 +5,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as state_provider;
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:seventy_five_hard/providers/progress_provider.dart';
+import 'package:seventy_five_hard/services/notifications_service.dart';
+import 'package:seventy_five_hard/widgets/quotes_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:seventy_five_hard/models/user_model.dart' as user_model;
@@ -14,7 +15,6 @@ import 'package:seventy_five_hard/providers/user_provider.dart';
 import 'package:seventy_five_hard/screens/history_screen.dart';
 import 'package:seventy_five_hard/screens/preferences_screen.dart';
 import 'package:seventy_five_hard/screens/progress_screen.dart';
-import 'package:seventy_five_hard/services/api_services.dart';
 import 'package:seventy_five_hard/widgets/greetings.dart';
 import 'package:seventy_five_hard/widgets/rule_card.dart';
 import 'package:seventy_five_hard/services/supabase_services.dart';
@@ -28,15 +28,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool quotesLoading = true;
   bool profileLoading = true;
-  List<String> quotes = [];
   final supabase = Supabase.instance.client;
 
   @override
   void initState() {
     super.initState();
-    _getQuotes();
     _getProfile();
     Timer.periodic(const Duration(seconds: 30), (timer) {
       final currentTime = DateTime.now();
@@ -45,9 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
         log('Retrieving data from SharedPreferences....');
         _getProgress();
         timer.cancel();
-      } else {
-        log('Not ${Utils.time['hour']} ${Utils.time['minute']} PM',
-            name: 'Home Screen');
       }
     });
   }
@@ -59,22 +53,22 @@ class _HomeScreenState extends State<HomeScreen> {
         state_provider.Provider.of<ProgressProvider>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Utils.navigateTo(context, const HistoryScreen()),
+          icon: const Icon(
+            Icons.history,
+            size: 25,
+          ),
+        ),
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Image.asset('assets/images/Landscape.png', height: 45),
         actions: [
           IconButton(
-            onPressed: () => Utils.navigateTo(context, const HistoryScreen()),
-            icon: const Icon(
-              Icons.history,
-              size: 25,
-            ),
-          ),
-          IconButton(
             onPressed: () =>
                 Utils.navigateTo(context, const PreferencesScreen()),
             icon: const Icon(
-              Icons.settings,
+              Icons.tune,
               size: 25,
             ),
           )
@@ -104,45 +98,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           imageUrl: userProvider.user!.imageUrl,
                           day: progressProvider.day.toString()),
                   const SizedBox(height: 10),
-                  Container(
-                      margin: const EdgeInsets.only(top: 16),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      width: double.infinity,
-                      height: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xB6626262),
-                          image: const DecorationImage(
-                            opacity: 0.4,
-                            fit: BoxFit.cover,
-                            image: AssetImage(
-                              'assets/images/sunrise.jpg',
-                            ),
-                          )),
-                      child: Center(
-                        child: quotesLoading
-                            ? const CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.white,
-                              )
-                            : AnimatedTextKit(
-                                repeatForever: true,
-                                animatedTexts: [
-                                  getQuoteText(quotes[0]),
-                                  getQuoteText(quotes[1]),
-                                  getQuoteText(quotes[2]),
-                                  getQuoteText(quotes[3]),
-                                  getQuoteText(quotes[4]),
-                                ],
-                              ),
-                      )),
+                  const QuotesCard(),
                   RuleCard(
                     icon: const Icon(
                       Icons.restaurant_outlined,
                       size: 45,
                       color: Colors.green,
                     ),
+                    bgColor: Colors.green,
                     title: "Follow a diet plan",
                     status: progressProvider.diet,
                     onTap: () {
@@ -169,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 45,
                       color: Colors.red,
                     ),
+                    bgColor: Colors.red,
                     title: "45-minute workout",
                     status: progressProvider.workout,
                     onTap: () {
@@ -196,6 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 45,
                       color: Colors.amber,
                     ),
+                    bgColor: Colors.amber,
                     title: "Take a progress picture",
                     status: progressProvider.picture,
                     onTap: () {
@@ -223,6 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 45,
                       color: Colors.blue,
                     ),
+                    bgColor: Colors.blue,
                     title: "Drink 1 gallon of water",
                     status: progressProvider.water,
                     onTap: () {
@@ -250,6 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 45,
                       color: Colors.orange,
                     ),
+                    bgColor: Colors.orange,
                     title: "Read 10 pages of a book",
                     status: progressProvider.reading,
                     onTap: () {
@@ -277,14 +244,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  _getQuotes() async {
-    APIServices apiServices = APIServices.instance;
-    quotes = await apiServices.fetchQuotes();
-    setState(() {
-      quotesLoading = false;
-    });
-  }
-
   _getProgress() async {
     Map<String, dynamic> preferences = await Utils.getPreferences();
     state_provider.Provider.of<ProgressProvider>(context, listen: false)
@@ -295,6 +254,14 @@ class _HomeScreenState extends State<HomeScreen> {
             picture: preferences['picture'],
             workout: preferences['workout'],
             water: preferences['water']);
+
+    (preferences['isDeleted'])
+        ? NotificationService().showNotification(
+            "You did not complete today's task, so your previous progress has been deleted!",
+          )
+        : NotificationService().showNotification(
+            "Today's progress has been saved in local storage!",
+          );
   }
 
   _getProfile() async {
@@ -322,15 +289,6 @@ class _HomeScreenState extends State<HomeScreen> {
         profileLoading = false;
       });
     });
-  }
-
-  FadeAnimatedText getQuoteText(quote) {
-    return FadeAnimatedText(
-      quote,
-      textAlign: TextAlign.center,
-      textStyle: const TextStyle(
-          color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
-    );
   }
 
   void _updateProgress(String key, double value) async {

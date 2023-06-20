@@ -31,6 +31,25 @@ class NotificationService {
         iOS: DarwinNotificationDetails());
   }
 
+  Future<void> showNotification(String progressText) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      '75',
+      '75Hard',
+      importance: Importance.max,
+      priority: Priority.high,
+      styleInformation: BigTextStyleInformation(''),
+    );
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await notificationsPlugin.show(
+      76,
+      '75 Hard',
+      "Progress updated: $progressText",
+      notificationDetails,
+    );
+  }
+
   Future<void> scheduleNotification() async {
     tz.initializeTimeZones();
 
@@ -38,6 +57,8 @@ class NotificationService {
         AndroidNotificationDetails(
       '75',
       '75Hard',
+      importance: Importance.max,
+      priority: Priority.high,
       styleInformation: BigTextStyleInformation(''),
     );
     const NotificationDetails notificationDetails =
@@ -46,7 +67,7 @@ class NotificationService {
       75,
       '75 Hard',
       Utils.notificationMessage,
-      RepeatInterval.everyMinute,
+      RepeatInterval.hourly,
       notificationDetails,
     );
   }

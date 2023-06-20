@@ -11,7 +11,7 @@ class ProgressScreen extends StatefulWidget {
   final dynamic unit;
   final dynamic goal;
   final Color progressColor;
-  final IconData icon;
+  final dynamic icon;
   final Function(double value) onPressed;
 
   const ProgressScreen(

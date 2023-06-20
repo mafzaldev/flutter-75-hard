@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:seventy_five_hard/services/sqflite_services.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 
 class Greetings extends StatelessWidget {
@@ -21,27 +18,9 @@ class Greetings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        InkWell(
-          // onTap: () => Utils.navigateTo(context, const PreferencesScreen()),
-          onTap: () async {
-            SqfliteServices sqfliteServices = SqfliteServices();
-            var data = await sqfliteServices.getAllData();
-            log(data.toString());
-          },
-          onDoubleTap: () async {
-            SqfliteServices sqfliteServices = SqfliteServices();
-            var data = await sqfliteServices.deleteAllData();
-            Utils.clearPreferences(1);
-            log(data.toString());
-          },
-          child: Badge(
-            smallSize: 12,
-            backgroundColor: AppColors.primaryColor,
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: SvgPicture.network(height: 60, imageUrl)),
-          ),
-        ),
+        ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SvgPicture.network(height: 60, imageUrl)),
         const SizedBox(width: 15),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +38,7 @@ class Greetings extends StatelessWidget {
               border: Border.all(color: AppColors.primaryColor),
               borderRadius: BorderRadius.circular(10)),
           child: Text(
-            'Day: $day',
+            'Day: $day/75',
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),

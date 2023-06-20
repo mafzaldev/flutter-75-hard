@@ -30,7 +30,7 @@ Future<void> main() async {
       DateTime.now().month,
       DateTime.now().day,
       Utils.time['hour'],
-      Utils.time['minute'] - 2,
+      Utils.time['minute'] - 1,
     ),
     exact: true,
     wakeup: true,

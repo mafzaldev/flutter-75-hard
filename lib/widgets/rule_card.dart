@@ -4,6 +4,7 @@ class RuleCard extends StatelessWidget {
   final String title;
   final Icon icon;
   final double status;
+  final Color bgColor;
   final Function()? onTap;
 
   const RuleCard({
@@ -12,6 +13,7 @@ class RuleCard extends StatelessWidget {
     required this.icon,
     required this.status,
     required this.onTap,
+    required this.bgColor,
   });
 
   @override
@@ -33,9 +35,9 @@ class RuleCard extends StatelessWidget {
             Container(
                 height: 70,
                 width: 70,
-                decoration: const BoxDecoration(
-                  color: Color(0x88828282),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: bgColor.withOpacity(0.3),
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
                   ),
